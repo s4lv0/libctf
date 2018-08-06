@@ -205,6 +205,15 @@ void ctf_privdrop(const char *user)
         errx(-1, "Unable to find user");
     }
 
+    // change directory (optionally chroot into the unprivileged user's home directory)
+#ifdef _CHROOT
+    if (chroot(pwentry->pw_dir) < 0 || chdir("/") < 0) {
+#else
+    if (chdir(pwentry->pw_dir) < 0) {
+#endif
+        errx(-1, "Unable to change current directory");
+    }
+
     /*
      * Unless someone mucks with their environment, these checks should prevent
      * payloads from being able to do nasty stuff to system files and temporary
@@ -224,15 +233,6 @@ void ctf_privdrop(const char *user)
     // set real, effective, and saved UID to that of the unprivileged user
     if (setuid(pwentry->pw_uid) < 0) {
         errx(-1, "Unable to change UID");
-    }
-
-    // change directory (optionally chroot into the unprivileged user's home directory)
-#ifdef _CHROOT
-    if (chroot(pwentry->pw_dir) < 0 || chdir("/") < 0) {
-#else
-    if (chdir(pwentry->pw_dir) < 0) {
-#endif
-        errx(-1, "Unable to change current directory");
     }
 }
 

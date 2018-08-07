@@ -179,7 +179,9 @@ void ctf_server(int sd, const char *user, int (*handler)(int))
              * anyway, so this should save time.
              */
 #ifndef _DEBUG
-            ctf_privdrop(user);
+            if (user != NULL) {
+                ctf_privdrop(user);
+            }
             alarm(16);
 #endif
             close(sd);

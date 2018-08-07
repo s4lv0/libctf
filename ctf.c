@@ -182,7 +182,7 @@ void ctf_server(int sd, const char *user, int (*handler)(int))
             if (user != NULL) {
                 ctf_privdrop(user);
             }
-            alarm(16);
+            alarm(60);
 #endif
             close(sd);
             status = handler(client);
